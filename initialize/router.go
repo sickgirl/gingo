@@ -3,6 +3,7 @@ package initialize
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/songcser/gingo/config"
+	"github.com/songcser/gingo/internal/ai"
 	"github.com/songcser/gingo/internal/app"
 	"github.com/songcser/gingo/middleware"
 	"github.com/songcser/gingo/utils"
@@ -10,7 +11,10 @@ import (
 )
 
 func HealthCheck(g *gin.Context) {
-	g.JSON(http.StatusOK, "ok...")
+	data := gin.H{
+		"message": "everyThing is Ok!",
+	}
+	g.JSON(http.StatusOK, data)
 }
 
 func Routers() *gin.Engine {
@@ -25,14 +29,17 @@ func Routers() *gin.Engine {
 
 	Router.Use(middleware.Recovery())
 	Router.Use(middleware.Logger())
-	HealthGroup := Router.Group("")
+	HealthGroup := Router.Group("/health")
 	{
 		// 健康监测
-		HealthGroup.GET("/health", HealthCheck)
+		HealthGroup.GET("/hhh", HealthCheck)
 	}
 
 	ApiGroup := Router.Group("api/v1")
 	app.InitRouter(ApiGroup)
+
+	//注册ai 相关路由
+	ai.InitRouter(ApiGroup)
 
 	return Router
 }

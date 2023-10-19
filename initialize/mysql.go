@@ -89,13 +89,15 @@ func GormMysql() *gorm.DB {
 	if m.Dbname == "" {
 		return nil
 	}
-	fmt.Println(m.Dsn())
 	mysqlConfig := mysql.Config{
 		DSN:                       m.Dsn(), // DSN data source name
 		DefaultStringSize:         191,     // string 类型字段的默认长度
 		SkipInitializeWithVersion: false,   // 根据版本自动配置
 	}
 	if db, err := gorm.Open(mysql.New(mysqlConfig), orm.Config(m.Prefix, m.Singular)); err != nil {
+
+		fmt.Println("当前数据库连接地址:", m.Dsn())
+
 		return nil
 	} else {
 		sqlDB, _ := db.DB()

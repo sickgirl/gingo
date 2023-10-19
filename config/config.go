@@ -15,6 +15,7 @@ type Configuration struct {
 	Mysql  autoload.Mysql `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	Zap    autoload.Zap   `mapstructure:"zap" json:"zap" yaml:"zap"`
 	JWT    autoload.JWT   `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
+	BC     autoload.BC    `mapstructure:"bc" json:"bc" yaml:"bc"`
 }
 
 var (
@@ -22,6 +23,5 @@ var (
 	GVA_DB     *gorm.DB
 	GVA_LOG    *zap.Logger
 	GVA_VP     *viper.Viper
-
-	GVA_JOB *cron.Cron
+	GVA_JOB    *cron.Cron
 )

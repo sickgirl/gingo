@@ -55,7 +55,46 @@ func (s Service) MakeResponse(val model.Model) any {
 
 //Embedding  将问题向量化 并从数据库中查询出匹配数据
 func (s Service) Embedding(question string) (string, error) {
-	return "", nil
+
+	messAge := ""
+
+	VConf := config.GVA_CONFIG.VECTOR
+	apiKey := VConf.ApiKey
+	account := VConf.Account
+	db := VConf.Db
+	collection := VConf.Collection
+	url := VConf.Url
+
+	request := VectorRequest{
+		Database:   db,
+		Collection: collection,
+		Search:     Search{},
+	}
+	req, _ := json.Marshal(request)
+
+	header := http.NewHeader()
+	header.Set("Content-Type", "application/json")
+	header.Set("Authorization", "Bearer "+fmt.Sprintf("account=%s&api_key=%s", account, apiKey))
+
+	resp, err := http.Call("POST", url, header, req)
+	if err != nil {
+		return messAge, err
+	}
+
+	data, err2 := ioutil.ReadAll(resp.Data.(io.Reader))
+	if err2 != nil {
+		return messAge, err2
+	}
+	var res VResponse
+	if err := jsoniter.Unmarshal(data, &res); err != nil {
+		return messAge, err
+	}
+
+	for _, v := range res.Documents {
+		messAge += v.Text
+	}
+	messAge = messAge + " " + question
+	return messAge, nil
 }
 
 //CheckFromBC  传入匹配完的数据文本 并返回答案
@@ -69,23 +108,22 @@ func (s Service) CheckFromBC(question string) (string, error) {
 	// 计算 X-BC-Timestamp（UTC时间戳）
 	timestamp := time.Now().Unix()
 
-	var mySlice []map[string]string
-	element1 := make(map[string]string)
-	element1["role"] = "user"
-	element1["content"] = question
+	var mySlice []MessagesB
+	element1 := MessagesB{
+		Role:    "user",
+		Content: question,
+	}
 
 	mySlice = append(mySlice, element1)
 
-	parameters := Parameters{
-		Temperature: 0.3,
-		TopK:        10,
-	}
-
 	messAge := ""
-	request := map[string]interface{}{
-		"model":      "Baichuan2-53B",
-		"messages":   mySlice,
-		"parameters": parameters,
+	request := BCRequest{
+		Model:    "Baichuan2-53B",
+		Messages: mySlice,
+		Parameters: ParametersB{
+			Temperature: 0.3,
+			TopK:        10,
+		},
 	}
 	req, _ := json.Marshal(request)
 
@@ -122,9 +160,21 @@ func (s Service) CheckFromBC(question string) (string, error) {
 }
 
 func (s Service) Test(question string) (string, error) {
-	//todo 1.向量化数据  并进行向量查询
-	//todo 2.调用百川系统  进行查询
-	return "", nil
+	return "测试返回", nil
+}
+
+func (s Service) Ask(question string) (string, error) {
+	return s.CheckFromBC(question)
+}
+
+func (s Service) AskAbout(question string) (string, error) {
+
+	question, err := s.Embedding(question)
+	if err != nil {
+		return "", err
+	}
+
+	return s.CheckFromBC(question)
 }
 
 // 计算签名

@@ -28,3 +28,17 @@ type Usage struct {
 	AnswerTokens int `json:"answer_tokens"`
 	TotalTokens  int `json:"total_tokens"`
 }
+
+type VResponse struct {
+	Code      int         `json:"code"`
+	Msg       string      `json:"msg"`
+	Documents []Documents `json:"documents"`
+}
+
+type Documents struct {
+	ID       string  `json:"id"`
+	Score    float64 `json:"score"`
+	BookName string  `json:"bookName"`
+	Author   string  `json:"author"`
+	Text     string  `json:"text"`
+}

@@ -20,7 +20,52 @@ func NewApi() Api {
 }
 
 func (a Api) Test(c *gin.Context) {
-	str, err := a.Service.Test()
+	str, err := a.Service.Test("")
+
+	if err != nil {
+		fmt.Printf("请求错误: %s", err.Error())
+
+		response.Fail(c)
+		return
+	}
+
+	data := gin.H{
+		"message": str,
+	}
+	response.OkWithData(data, c)
+}
+
+func (a Api) Ask(c *gin.Context) {
+	body := AskRequest{}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		fmt.Printf("参数错误: %s", err.Error())
+		response.Fail(c)
+		return
+	}
+
+	str, err := a.Service.Ask(body.Question)
+
+	if err != nil {
+		fmt.Printf("请求错误: %s", err.Error())
+
+		response.Fail(c)
+		return
+	}
+
+	data := gin.H{
+		"message": str,
+	}
+	response.OkWithData(data, c)
+}
+
+func (a Api) AskAbout(c *gin.Context) {
+	body := AskRequest{}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		fmt.Printf("参数错误: %s", err.Error())
+		response.Fail(c)
+		return
+	}
+	str, err := a.Service.AskAbout(body.Question)
 
 	if err != nil {
 		fmt.Printf("请求错误: %s", err.Error())

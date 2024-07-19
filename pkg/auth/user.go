@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/songcser/gingo/config"
@@ -37,6 +38,8 @@ func (b BaseUser) Login(c *gin.Context) error {
 	if ok := utils.BcryptCheck(req.Password, user.Password); !ok {
 		return errors.New("用户名或密码错误")
 	}
+	fmt.Print("密码验证通过")
+
 	return b.tokenNext(c, user)
 }
 
@@ -75,6 +78,9 @@ func (b BaseUser) Auth(c *gin.Context) error {
 
 func (b BaseUser) tokenNext(c *gin.Context, user BaseUser) error {
 	j := utils.NewJWT()
+
+	fmt.Printf("当前登录用户id: %v name: %v ", user.ID, user.Name)
+
 	claims := j.CreateClaims(utils.BaseClaims{
 		ID:       user.ID,
 		Username: user.Name,

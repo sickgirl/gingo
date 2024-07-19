@@ -5,6 +5,7 @@ import (
 	"github.com/songcser/gingo/config"
 	"github.com/songcser/gingo/internal/ai"
 	"github.com/songcser/gingo/internal/app"
+	"github.com/songcser/gingo/internal/wx"
 	"github.com/songcser/gingo/middleware"
 	"github.com/songcser/gingo/utils"
 	"net/http"
@@ -40,6 +41,9 @@ func Routers() *gin.Engine {
 
 	//注册ai 相关路由
 	ai.InitRouter(ApiGroup)
+
+	//注册wx 相关路由
+	wx.InitRouter(ApiGroup)
 
 	return Router
 }

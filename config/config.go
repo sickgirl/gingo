@@ -16,7 +16,9 @@ type Configuration struct {
 	Zap    autoload.Zap    `mapstructure:"zap" json:"zap" yaml:"zap"`
 	JWT    autoload.JWT    `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
 	BC     autoload.BC     `mapstructure:"bc" json:"bc" yaml:"bc"`
+	WX     autoload.WX     `mapstructure:"wx" json:"wx" yaml:"wx"`
 	VECTOR autoload.VECTOR `mapstructure:"vector" json:"vector" yaml:"vector"`
+	User   autoload.User   `mapstructure:"user" json:"user" yaml:"user"`
 }
 
 var (

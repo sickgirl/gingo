@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/coocood/freecache v1.2.3
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/douglarek/zerodown v1.0.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
